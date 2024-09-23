@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Business Intelligence Project Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-list li {
+            border-left: 4px solid #4299e1;
+            transition: all 0.3s ease;
+        }
+
+        .task-list li:hover {
+            background-color: #ebf8ff;
+        }
+
+        .pomodoro-clock {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .progress-ring {
+            width: 140px;
+            height: 140px;
+        }
+
+        .progress-ring__circle {
+            transition: 0.35s stroke-dashoffset;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* New styles for the highlighted task */
+        .task-highlight {
+            background-color: #fefcbf;
+            box-shadow: 0 0 15px rgba(236, 201, 75, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 15px rgba(236, 201, 75, 0.5);
+            }
+
+            to {
+                box-shadow: 0 0 25px rgba(236, 201, 75, 0.8);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+                AI Business Intelligence Project Dashboard
+            </h1>
+        </div>
+
+        <div class="card p-8 mb-12 glass-effect">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6">Select Your Role and Project Phase</h2>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Select Role:</label>
+                    <select name="role" id="role" required
+                        class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm">
+                        <option value="BE">Backend Developer (BE)</option>
+                        <option value="FE">Frontend Developer (FE)</option>
+                        <option value="ML">Machine Learning Engineer (ML)</option>
+                        <option value="DO">DevOps Engineer (DO)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="phase" class="block text-sm font-medium text-gray-700 mb-1">Select Project
+                        Phase:</label>
+                    <select name="phase" id="phase" required
+                        class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm">
+                        <option value="setup">Project Setup and Core Features (Day 1-5)</option>
+                        <option value="key">Key Feature Implementation (Day 6-10)</option>
+                        <option value="advanced">Advanced Features and Integration (Day 11-15)</option>
+                        <option value="refinement">Refinement, Testing, and Deployment (Day 16-20)</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="btn w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white gradient-bg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    View Tasks
+                </button>
+            </form>
+        </div>
+
+        <div class="card p-8 mb-12">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6">Tasks for <span id="selectedRole"
+                    class="text-indigo-600"></span> in <span id="selectedPhase" class="text-indigo-600"></span></h2>
+            <ul id="taskList" class="task-list space-y-4"></ul>
+        </div>
+
+        <button id="showAllTasksButton"
+            class="btn w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mb-12">
+            Show All Tasks
+        </button>
+
+        <div class="card p-8">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6">All Tasks</h2>
+            <div id="allTaskList" class="space-y-8"></div>
+        </div>
+    </div>
+
+    <div class="pomodoro-clock">
+        <div class="timer" id="timer">25:00</div>
+        <svg class="progress-ring mx-auto" width="140" height="140">
+            <circle class="progress-ring__circle" stroke="#4299e1" stroke-width="10" fill="transparent" r="60" cx="70"
+                cy="70" />
+        </svg>
+        <div class="flex justify-between mt-6">
+            <button id="startBtn"
+                class="btn px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">Start</button>
+            <button id="resetBtn"
+                class="btn px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const tasks = {
+            setup: {
+                BE: [
+                    "Day 1: Set up FastAPI project structure, database models",
+                    "Day 2-3: Implement user authentication and core API endpoints",
+                    "Day 4-5: Implement core CRUD operations for main entities"
+                ],
+                FE: [
+                    "Day 1: Initialize Next.js project, create basic layout",
+                    "Day 2-3: Implement authentication UI, dashboard layout",
+                    "Day 4-5: Develop reusable components (charts, forms)"
+                ],
+                ML: [
+                    "Day 1: Set up development environment, begin data collection",
+                    "Day 2-3: Preprocess data, start training base models (IndicBERT, MarianMT)",
+                    "Day 4-5: Build initial versions of Pitch Deck Builder and Financial Forecasting models"
+                ],
+                DO: [
+                    "Day 1: Set up Git repository, configure Docker for development",
+                    "Day 2-3: Configure CI/CD pipeline, set up development databases",
+                    "Day 4-5: Implement monitoring and logging (Prometheus, Grafana)"
+                ]
+            },
+            key: {
+                BE: [
+                    "Day 6-7: Develop Pitch Deck and Financial Forecasting API endpoints",
+                    "Day 8-9: Implement Market Sentiment and Business Strategy endpoints",
+                    "Day 10: Finalize Product Roadmap and Regional Fine-Tuning endpoints"
+                ],
+                FE: [
+                    "Day 6-7: Create Pitch Deck Builder and Financial Forecasting pages",
+                    "Day 8-9: Build Market Sentiment and Business Strategy pages",
+                    "Day 10: Build Product Roadmap and Regional Fine-Tuning interfaces"
+                ],
+                ML: [
+                    "Day 6-7: Develop Market Sentiment Analyzer and Business Strategy models",
+                    "Day 8-9: Develop Product Roadmap Focus and Regional Fine-Tuning models",
+                    "Day 10: Begin integrating models with API endpoints"
+                ],
+                DO: [
+                    "Day 6-7: Set up Kubernetes cluster for the staging environment",
+                    "Day 8-9: Implement data backup and recovery solutions",
+                    "Day 10: Implement auto-scaling for Kubernetes deployments"
+                ]
+            },
+            advanced: {
+                BE: [
+                    "Day 11-12: Create Competitor Analysis and Sales Forecasting endpoints",
+                    "Day 13-14: Develop Customer Retention and Crisis Management endpoints",
+                    "Day 15: Build Excel Analyzer and Chart Producer endpoints"
+                ],
+                FE: [
+                    "Day 11-12: Develop Competitor Analysis and Sales Forecasting UI",
+                    "Day 13-14: Build Customer Retention and Crisis Management pages",
+                    "Day 15: Develop Excel Analyzer and Chart Producer UI"
+                ],
+                ML: [
+                    "Day 11-12: Build Competitor Analysis and Sales Forecasting models",
+                    "Day 13-14: Develop Customer Retention and Crisis Management models",
+                    "Day 15: Build Excel Analyzer and Chart Producer models"
+                ],
+                DO: [
+                    "Day 11-12: Implement security measures (encryption, access controls)",
+                    "Day 13-14: Set up production environment, configure load balancers",
+                    "Day 15: Perform security audits, penetration testing"
+                ]
+            },
+            refinement: {
+                BE: [
+                    "Day 16-17: Optimize database queries, write API documentation",
+                    "Day 18: Conduct API testing, resolve bugs",
+                    "Day 19: Finalize API documentation",
+                    "Day 20: Conduct integrated system testing and resolve final issues, prepare handover documentation and final presentation"
+                ],
+                FE: [
+                    "Day 16-17: Implement error handling, loading states, responsiveness",
+                    "Day 18: Perform usability testing, resolve UI issues",
+                    "Day 19: Finalize UI polish, cross-browser testing",
+                    "Day 20: Conduct integrated system testing and resolve final issues, prepare handover documentation and final presentation"
+                ],
+                ML: [
+                    "Day 16-17: Fine-tune models, optimize performance",
+                    "Day 18: Evaluate model performance, make final tweaks",
+                    "Day 19: Package models for deployment",
+                    "Day 20: Conduct integrated system testing and resolve final issues, prepare handover documentation and final presentation"
+                ],
+                DO: [
+                    "Day 16-17: Set up automated backups and disaster recovery",
+                    "Day 18: Conduct load testing, optimize system performance",
+                    "Day 19: Finalize deployment scripts, set up monitoring",
+                    "Day 20: Deploy to production, conduct integrated system testing and resolve final issues, prepare handover documentation and final presentation"
+                ]
+            }
+        };
+
+        const form = document.getElementById('loginForm');
+        const taskList = document.getElementById('taskList');
+        const allTaskList = document.getElementById('allTaskList');
+        const selectedRoleElement = document.getElementById('selectedRole');
+        const selectedPhaseElement = document.getElementById('selectedPhase');
+        const showAllTasksButton = document.getElementById('showAllTasksButton');
+
+        // Function to get the current project day (1-20)
+        function getCurrentProjectDay() {
+            const startDate = new Date('2024-09-23'); // Adjust this to your project start date
+            const today = new Date();
+            const diffTime = Math.abs(today - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.min(diffDays, 20); // Cap at 20 days
+        }
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Clear existing tasks
+            taskList.innerHTML = '';
+
+            // Get role and phase
+            const role = document.getElementById('role').value;
+            const phase = document.getElementById('phase').value;
+
+            selectedRoleElement.textContent = role;
+            selectedPhaseElement.textContent = document.getElementById('phase').options[document.getElementById('phase').selectedIndex].text;
+
+            const currentDay = getCurrentProjectDay();
+
+            if (tasks[phase] && tasks[phase][role]) {
+                tasks[phase][role].forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300';
+                    li.textContent = task;
+
+                    // Highlight the current day's task
+                    const taskDay = index + 1 + (Object.keys(tasks).indexOf(phase) * 5);
+                    if (taskDay === currentDay) {
+                        li.classList.add('task-highlight');
+                    }
+
+                    taskList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.className = 'p-4 bg-white rounded-lg shadow-md text-gray-500';
+                li.textContent = 'No tasks available for this phase and role.';
+                taskList.appendChild(li);
+            }
+        });
+
+        showAllTasksButton.addEventListener('click', function () {
+            allTaskList.innerHTML = '';
+
+            const currentDay = getCurrentProjectDay();
+
+            for (const phase in tasks) {
+                const phaseDiv = document.createElement('div');
+                phaseDiv.className = 'mb-8';
+                const phaseTitle = document.createElement('h3');
+                phaseTitle.className = 'text-2xl font-semibold text-indigo-700 mb-4';
+                phaseTitle.textContent = document.querySelector(`#phase option[value="${phase}"]`).textContent;
+                phaseDiv.appendChild(phaseTitle);
+
+                for (const role in tasks[phase]) {
+                    const roleDiv = document.createElement('div');
+                    roleDiv.className = 'mb-4';
+                    const roleTitle = document.createElement('h4');
+                    roleTitle.className = 'text-xl font-medium text-gray-800 mb-2';
+                    roleTitle.textContent = document.querySelector(`#role option[value="${role}"]`).textContent;
+                    roleDiv.appendChild(roleTitle);
+
+                    const taskUl = document.createElement('ul');
+                    taskUl.className = 'list-disc list-inside space-y-2';
+                    tasks[phase][role].forEach((task, index) => {
+                        const taskLi = document.createElement('li');
+                        taskLi.className = 'text-gray-600 p-2 rounded';
+                        taskLi.textContent = task;
+
+                        // Highlight the current day's task
+                        const taskDay = index + 1 + (Object.keys(tasks).indexOf(phase) * 5);
+                        if (taskDay === currentDay) {
+                            taskLi.classList.add('task-highlight');
+                        }
+
+                        taskUl.appendChild(taskLi);
+                    });
+                    roleDiv.appendChild(taskUl);
+                    phaseDiv.appendChild(roleDiv);
+                }
+                allTaskList.appendChild(phaseDiv);
+            }
+        });
+
+        // Pomodoro Clock
+        const timer = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const circle = document.querySelector('.progress-ring__circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const offset = circumference - percent / 100 * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        let intervalId;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let isRunning = false;
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            setProgress((1 - timeLeft / (25 * 60)) * 100);
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startBtn.textContent = 'Pause';
+                startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                startBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                intervalId = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimer();
+                    } else {
+                        clearInterval(intervalId);
+                        isRunning = false;
+                        startBtn.textContent = 'Start';
+                        startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                        startBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                        // Play a sound or show a notification when the timer ends
+                        alert('Pomodoro session completed!');
+                    }
+                }, 1000);
+            } else {
+                clearInterval(intervalId);
+                isRunning = false;
+                startBtn.textContent = 'Resume';
+                startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                startBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(intervalId);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateTimer();
+            startBtn.textContent = 'Start';
+            startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+            startBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateTimer();
+    </script>
+</body>
+
+</html>
